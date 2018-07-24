@@ -1,0 +1,24 @@
+# Binaries for programs and plugins
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+
+# Test binary, build with `go test -c`
+*.test
+
+# Output of the go coverage tool, specifically when used with LiteIDE
+*.out
+
+bin/
+
+# Workspace settings
+.vscode
+
+# This can contain secrets.
+.env
+
+# No need for extra bloat when this is all in git repos
+/vendor/github.com/*
+/vendor/golang.org/*
