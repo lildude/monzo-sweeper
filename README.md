@@ -1,6 +1,6 @@
 # Monzo Sweeper
 
-[![Build Status](https://travis-ci.org/lildude/monzo-sweeper.svg?branch=master)](https://travis-ci.org/lildude/monzo-sweeper)
+[![Build Status](https://travis-ci.org/lildude/monzo-sweeper.svg?branch=master)](https://travis-ci.org/lildude/monzo-sweeper) [![Coverage Status](https://coveralls.io/repos/github/lildude/monzo-sweeper/badge.svg?branch=master)](https://coveralls.io/github/lildude/monzo-sweeper?branch=master)
 
 This is a simple Go application that sweeps the balance of your account at the time of receiving a deposit above a set threshold to a designated savings pot. This is a great way of automating your monthly savings and compliments the coin jar rounding up functionality already provided by Monzo.
 
