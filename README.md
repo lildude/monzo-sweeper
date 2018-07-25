@@ -37,7 +37,11 @@ This is designed to be run on Heroku as I already use Heroku and this runs quite
   - `MONZO_SWEEP_THRESHOLD` - the threshold, in _pence_, for incoming payments to trigger a sweep. If not set, sweeping will not occur.
 
   ```
-  $ heroku config:set MONZO_ACCOUNT_ID="your-account-id" MONZO_ACCESS_TOKEN="your-personal-access-token" MONZO_SWEEP_POT_ID="your-savings-pot-id MONZO_SWEEP_THRESHOLD="your-threshold-in-pence"
+  $ heroku config:set \
+  MONZO_ACCOUNT_ID="your-account-id" \
+  MONZO_ACCESS_TOKEN="your-personal-access-token" \
+  MONZO_SWEEP_POT_ID="your-savings-pot-id \
+  MONZO_SWEEP_THRESHOLD="your-threshold-in-pence"
   ```
 
 ### Local Development and Testing
