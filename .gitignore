@@ -18,7 +18,3 @@ bin/
 
 # This can contain secrets.
 .env
-
-# No need for extra bloat when this is all in git repos
-/vendor/github.com/*
-/vendor/golang.org/*
