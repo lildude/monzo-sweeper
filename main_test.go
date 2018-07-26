@@ -18,11 +18,11 @@ func mockResponse(statusCode int, headers map[string]string, body []byte) {
 func TestTxnHandler(t *testing.T) {
 	//t.Parallel()
 	testCases := []struct {
-		name     string
-		method   string
-		body     string
-		message  string
-		mockresp []byte
+		name        string
+		method      string
+		webhookbody string
+		message     string
+		mockresp    []byte
 	}{
 		{"empty GET", http.MethodGet, "", "INFO: empty body", []byte{}},
 		{"empty POST", http.MethodPost, "", "INFO: empty body", []byte{}},
@@ -89,7 +89,7 @@ func TestTxnHandler(t *testing.T) {
 			// Use a faux logger so we can parse the content to find our debug messages to confirm our tests
 			var fauxLog bytes.Buffer
 			log.SetOutput(&fauxLog)
-			req := httptest.NewRequest(tc.method, "/", strings.NewReader(tc.body))
+			req := httptest.NewRequest(tc.method, "/", strings.NewReader(tc.webhookbody))
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(TxnHandler)
 			handler.ServeHTTP(rr, req)
