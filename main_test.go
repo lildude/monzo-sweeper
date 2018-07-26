@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"strings"
+	"testing"
 
 	mockhttp "github.com/karupanerura/go-mock-http-response"
-	"testing"
 )
 
 func mockResponse(statusCode int, headers map[string]string, body []byte) {
@@ -37,7 +37,7 @@ func TestTxnHandler(t *testing.T) {
 			"transaction above threshold",
 			http.MethodPost,
 			`{"data":{"id": "tx_1234_above", "amount": 2500}}`,
-			"INFO: transfer successful",
+			"INFO: transfer successful (New bal: 25.74 | 0.74)",
 			[]byte(`{"transaction":{"amount":2500, "account_balance":2574, "merchant": null}}`),
 		},
 		{
