@@ -68,8 +68,8 @@ func TxnHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Store the webhook uid in an environment variable and use to try catch duplicate deliveries
-	ltu, _ := os.LookupEnv("LAST_TRANSACTION_ID")
-	if ltu != "" && ltu == wh.Data.TransactionId {
+	lti, _ := os.LookupEnv("LAST_TRANSACTION_ID")
+	if lti != "" && lti == wh.Data.TransactionId {
 		log.Println("INFO: ignoring duplicate webhook delivery")
 		return
 	}
