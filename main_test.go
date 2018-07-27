@@ -18,62 +18,74 @@ func mockResponse(statusCode int, headers map[string]string, body []byte) {
 func TestTxnHandler(t *testing.T) {
 	//t.Parallel()
 	testCases := []struct {
-		name        string
-		method      string
-		webhookbody string
-		message     string
-		mockresp    []byte
+		name             string
+		method           string
+		webhookPayload   string
+		logMessage       string
+		mockResponseBody []byte
 	}{
-		{"empty GET", http.MethodGet, "", "INFO: empty body", []byte{}},
-		{"empty POST", http.MethodPost, "", "INFO: empty body", []byte{}},
 		{
-			"invalid json",
-			http.MethodPost,
-			`{"foo":"bar}`,
-			"ERROR: failed to unmarshal web hook payload",
-			[]byte{},
+			name:             "empty GET",
+			method:           http.MethodGet,
+			webhookPayload:   "",
+			logMessage:       "INFO: empty body",
+			mockResponseBody: []byte{},
 		},
 		{
-			"transaction above threshold",
-			http.MethodPost,
-			`{"data":{"id": "tx_1234_above", "amount": 2500}}`,
-			"INFO: transfer successful (New bal: 25.74 | 0.74)",
-			[]byte(`{"transaction":{"amount":2500, "account_balance":2574, "merchant": null}}`),
+			name:             "empty POST",
+			method:           http.MethodPost,
+			webhookPayload:   "",
+			logMessage:       "INFO: empty body",
+			mockResponseBody: []byte{},
 		},
 		{
-			"transaction below threshold",
-			http.MethodPost,
-			`{"data":{"id": "tx_4567_below", "amount": 500}}`,
-			"INFO: ignoring inbound transaction below sweep threshold",
-			[]byte(`{"transaction":{"amount": 500, "account_balance": 75412, "merchant": null}}`),
+			name:             "invalid json",
+			method:           http.MethodPost,
+			webhookPayload:   `{"foo":"bar}`,
+			logMessage:       "ERROR: failed to unmarshal web hook payload",
+			mockResponseBody: []byte{},
 		},
 		{
-			"transaction above threshold with 0 balance",
-			http.MethodPost,
-			`{"data":{"id": "tx_1234_zero", "amount": 2500}}`,
-			"INFO: doing nothing as balance <= 0",
-			[]byte(`{"transaction":{"amount":2500, "account_balance":2500, "merchant": null}}`),
+			name:             "transaction above threshold",
+			method:           http.MethodPost,
+			webhookPayload:   `{"data":{"id": "tx_1234_above", "amount": 2500}}`,
+			logMessage:       "INFO: transfer successful",
+			mockResponseBody: []byte(`{"transaction":{"amount":2500, "account_balance":2574, "merchant": null}}`),
 		},
 		{
-			"transaction above threshold with negative balance",
-			http.MethodPost,
-			`{"data":{"id": "tx_1234_negative", "amount": 2500}}`,
-			"INFO: doing nothing as balance <= 0",
-			[]byte(`{"transaction":{"amount":2500, "account_balance":2474, "merchant": null}}`),
+			name:             "transaction below threshold",
+			method:           http.MethodPost,
+			webhookPayload:   `{"data":{"id": "tx_4567_below", "amount": 500}}`,
+			logMessage:       "INFO: ignoring inbound transaction below sweep threshold",
+			mockResponseBody: []byte(`{"transaction":{"amount": 500, "account_balance": 75412, "merchant": null}}`),
 		},
 		{
-			"duplicate transaction above threshold 1",
-			http.MethodPost,
-			`{"data":{"id": "tx_1234_dup", "amount": 2500}}`,
-			"INFO: transfer successful",
-			[]byte(`{"transaction":{"amount":2500, "account_balance":2574, "merchant": null}}`),
+			name:             "transaction above threshold with 0 balance",
+			method:           http.MethodPost,
+			webhookPayload:   `{"data":{"id": "tx_1234_zero", "amount": 2500}}`,
+			logMessage:       "INFO: doing nothing as balance <= 0",
+			mockResponseBody: []byte(`{"transaction":{"amount":2500, "account_balance":2500, "merchant": null}}`),
 		},
 		{
-			"duplicate transaction above threshold 2",
-			http.MethodPost,
-			`{"data":{"id": "tx_1234_dup", "amount": 2500}}`,
-			"INFO: ignoring duplicate webhook delivery",
-			[]byte{},
+			name:             "transaction above threshold with negative balance",
+			method:           http.MethodPost,
+			webhookPayload:   `{"data":{"id": "tx_1234_negative", "amount": 2500}}`,
+			logMessage:       "INFO: doing nothing as balance <= 0",
+			mockResponseBody: []byte(`{"transaction":{"amount":2500, "account_balance":2474, "merchant": null}}`),
+		},
+		{
+			name:             "duplicate transaction above threshold 1",
+			method:           http.MethodPost,
+			webhookPayload:   `{"data":{"id": "tx_1234_dup", "amount": 2500}}`,
+			logMessage:       "INFO: transfer successful",
+			mockResponseBody: []byte(`{"transaction":{"amount":2500, "account_balance":2574, "merchant": null}}`),
+		},
+		{
+			name:             "duplicate transaction above threshold 2",
+			method:           http.MethodPost,
+			webhookPayload:   `{"data":{"id": "tx_1234_dup", "amount": 2500}}`,
+			logMessage:       "INFO: ignoring duplicate webhook delivery",
+			mockResponseBody: []byte{},
 		},
 	}
 
@@ -83,18 +95,18 @@ func TestTxnHandler(t *testing.T) {
 			//t.Parallel()
 			s.SweepThreshold = 1000
 			// Set a mock response, if needed.
-			if len(tc.mockresp) > 0 {
-				mockResponse(http.StatusOK, map[string]string{"Content-Type": "application/json"}, tc.mockresp)
+			if len(tc.mockResponseBody) > 0 {
+				mockResponse(http.StatusOK, map[string]string{"Content-Type": "application/json"}, tc.mockResponseBody)
 			}
-			// Use a faux logger so we can parse the content to find our debug messages to confirm our tests
+			// Use a faux logger so we can parse the content to find our debug logMessages to confirm our tests
 			var fauxLog bytes.Buffer
 			log.SetOutput(&fauxLog)
-			req := httptest.NewRequest(tc.method, "/", strings.NewReader(tc.webhookbody))
+			req := httptest.NewRequest(tc.method, "/", strings.NewReader(tc.webhookPayload))
 			rr := httptest.NewRecorder()
 			handler := http.HandlerFunc(TxnHandler)
 			handler.ServeHTTP(rr, req)
-			if !strings.Contains(fauxLog.String(), tc.message) {
-				t.Errorf("'%v' failed.\nGot:\n%v\nExpected:\n%v", tc.name, fauxLog.String(), tc.message)
+			if !strings.Contains(fauxLog.String(), tc.logMessage) {
+				t.Errorf("'%v' failed.\nGot:\n%v\nExpected:\n%v", tc.name, fauxLog.String(), tc.logMessage)
 			}
 		})
 	}
