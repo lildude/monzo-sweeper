@@ -39,7 +39,7 @@ type WebHookData struct {
 var s Settings
 
 func main() {
-	log.SetFlags(0)
+	log.SetFlags(0) // Remove date and timestamp from messages
 	err := envconfig.Process("monzo", &s)
 	if err != nil {
 		log.Fatal(err.Error())
