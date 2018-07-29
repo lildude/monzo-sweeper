@@ -9,7 +9,7 @@ This is designed to be run on Heroku as I already use Heroku and this runs quite
 ## How it works
 
 1. Monzo triggers a webhook on each transaction.
-2. This webhook is configured to POST the transaction data to this application running on Heroku.
+2. This webhook is configured to `POST` the transaction data to this application running on Heroku.
 3. The application checks if the the amount is larger than the configured threshold, and if it is, it'll transfer the balance at the time of receiving the incoming transaction to a nominated pot.
 
 ## Installation
@@ -24,8 +24,8 @@ This is designed to be run on Heroku as I already use Heroku and this runs quite
 
 1. If you don't have any pots configured yet, create one on the Account tab in your Monzo app.
 2. Deploy Monzo Sweeper to Heroku: [Snazzy button coming :soon:]
-3. Make a note of the application URL, this is the webhook URL you'll need to enter on Monzo when registering the webhook.
-4. Browse to https://developers.monzo.com/ and sign in. This will take you to the Monzo API playground. Make a note of the Account ID and Access token values from the top of the page. If you have multiple Monzo accounts, enter `/accounts` in the `GET` box and click "Send" to get a list of accounts and make a note of the ID of the account you wish to use.
+3. Make a note of the application URL, this is the webhook URL you'll need to enter on Monzo when registering the webhook. If you want a custom URL, now's the time to change it.
+4. Browse to https://developers.monzo.com/ and sign in. This will take you to the Monzo API playground. Make a note of the Account ID and Access token values from the top of the page. If you have multiple Monzo accounts, enter `/accounts` in the `GET` box and click "Send" to get a list of accounts and make a note of the ID of the account you wish to use. You'll need to replace all references to `$account_id` within the Monzo API Playground with this ID.
 5. Obtain the Pot ID for the Pot you wish to sweep your money into by:
   - replacing `/accounts` with `/pots` in the `GET` box and clicking "Send".
   - scroll through the results until you find the pot and make a note of the `id` field. This is your Pot ID.
@@ -46,9 +46,9 @@ This is designed to be run on Heroku as I already use Heroku and this runs quite
 
 ### Local Development and Testing
 
-- Save your Heroku config vars to a `.env` file: `heroku config:get -s  >.env`. Don't commit this file to your repo unless you really don't like your money.
+- Save your Heroku config vars to a `.env` file: `heroku config:get -s  >.env`. Don't commit this file to your repo unless you really don't like your money 😜.
 - Start the application: `heroku local`.
-- Send test requests to 0.0.0.0:5000 using something like curl or httpie.
+- Send test requests to 0.0.0.0:5000 using something like `curl`,  [httpie](https://httpie.org/) or [Postman](https://www.getpostman.com/).
 
 ### Contributing
 
