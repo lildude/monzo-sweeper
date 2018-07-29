@@ -18,3 +18,4 @@ bin/
 
 # This can contain secrets.
 .env
+coverage.html
