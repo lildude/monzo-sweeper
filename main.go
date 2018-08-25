@@ -16,9 +16,9 @@ import (
 type Settings struct {
 	Port                string  `required:"true" envconfig:"PORT"` // Default: 5000 when run locally
 	PersonalAccessToken string  `required:"true" split_words:"true"`
-	SweepPotId          string  `required:"true" split_words:"true"`
+	SweepPotID          string  `required:"true" split_words:"true"`
 	SweepThreshold      float64 `required:"true" split_words:"true"`
-	AccountId           string  `required:"true" split_words:"true"`
+	AccountID           string  `required:"true" split_words:"true"`
 }
 
 // WebHookPayload defines the structure of the Monzo webhook payload, but only for the fields we're interested in.
@@ -29,10 +29,10 @@ type WebHookPayload struct {
 
 // WebHookData defines the structure of the Monzo webhook data attribute, but only for the fields we're interested in.
 type WebHookData struct {
-	AccountId     string    `json:"account_id"`
+	AccountID     string    `json:"account_id"`
 	Amount        float64   `json:"amount"`
 	Create        time.Time `json:"created"`
-	TransactionId string    `json:"id"`
+	TransactionID string    `json:"id"`
 	IsLoad        bool      `json:"is_load"`
 }
 
@@ -49,6 +49,7 @@ func main() {
 	http.ListenAndServe(":"+s.Port, nil)
 }
 
+// TxnHandler receives the webhook payload and does the magic
 func TxnHandler(w http.ResponseWriter, r *http.Request) {
 	// Return OK as soon as we've received the payload - the webhook doesn't care what we do with the payload so no point holding things back.
 	w.WriteHeader(http.StatusOK)
@@ -69,12 +70,12 @@ func TxnHandler(w http.ResponseWriter, r *http.Request) {
 
 	// Store the webhook uid in an environment variable and use to try catch duplicate deliveries
 	lti, _ := os.LookupEnv("LAST_TRANSACTION_ID")
-	if lti != "" && lti == wh.Data.TransactionId {
+	if lti != "" && lti == wh.Data.TransactionID {
 		log.Println("INFO: ignoring duplicate webhook delivery")
 		return
 	}
 
-	os.Setenv("LAST_TRANSACTION_ID", wh.Data.TransactionId)
+	os.Setenv("LAST_TRANSACTION_ID", wh.Data.TransactionID)
 
 	if s.SweepThreshold <= 0.0 || wh.Data.Amount < s.SweepThreshold {
 		log.Println("INFO: ignoring inbound transaction below sweep threshold")
@@ -88,9 +89,9 @@ func TxnHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	log.Printf("INFO: threshold: %v\n", s.SweepThreshold)
-	txn, err := cl.Transaction(wh.Data.TransactionId)
+	txn, err := cl.Transaction(wh.Data.TransactionID)
 	if err != nil {
-		log.Println("ERROR: problem getting transaction ", wh.Data.TransactionId)
+		log.Println("ERROR: problem getting transaction ", wh.Data.TransactionID)
 		log.Println(err.Error())
 	}
 	bal := (txn.AccountBalance - txn.Amount)
@@ -101,14 +102,14 @@ func TxnHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	resp, err := cl.Deposit(&monzo.DepositRequest{
-		PotID:          s.SweepPotId,
-		AccountID:      s.AccountId,
+		PotID:          s.SweepPotID,
+		AccountID:      s.AccountID,
 		Amount:         bal,
-		IdempotencyKey: wh.Data.TransactionId,
+		IdempotencyKey: wh.Data.TransactionID,
 	})
 
 	if err != nil {
-		log.Printf("ERROR: problem transferring to pot '%v'", s.SweepPotId)
+		log.Printf("ERROR: problem transferring to pot '%v'", s.SweepPotID)
 		log.Println(err.Error())
 	}
 	log.Printf("INFO: transfer successful (New bal: %.2f | %.2f)", float64(resp.Balance/100), float64(bal/100))
