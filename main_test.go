@@ -56,14 +56,14 @@ func TestTxnHandler(t *testing.T) {
 			name:             "transaction below threshold",
 			method:           http.MethodPost,
 			webhookPayload:   `{"data":{"id": "tx_4567_below", "amount": 500}}`,
-			logMessage:       "INFO: ignoring inbound transaction below sweep threshold",
+			logMessage:       "INFO: ignoring inbound transaction (500) below sweep threshold (1000)",
 			mockResponseBody: []byte(`{"transaction":{"amount": 500, "account_balance": 75412, "merchant": null}}`),
 		},
 		{
 			name:             "outbound transaction",
 			method:           http.MethodPost,
 			webhookPayload:   `{"data":{"id": "tx_4567_outwards", "amount": -500}}`,
-			logMessage:       "INFO: ignoring inbound transaction below sweep threshold",
+			logMessage:       "INFO: ignoring inbound transaction (500) below sweep threshold (1000)",
 			mockResponseBody: []byte(`{"transaction":{"amount": 500, "account_balance": 75412, "merchant": null}}`),
 		},
 		{
