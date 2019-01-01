@@ -93,6 +93,7 @@ func TxnHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Println("ERROR: problem getting transaction ", wh.Data.TransactionID)
 		log.Println(err.Error())
+		return
 	}
 	bal := (txn.AccountBalance - txn.Amount)
 	log.Printf("INFO: balance before: %v", bal)
@@ -111,6 +112,7 @@ func TxnHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		log.Printf("ERROR: problem transferring to pot '%v'", s.SweepPotID)
 		log.Println(err.Error())
+		return
 	}
 	log.Printf("INFO: transfer successful (New bal: %.2f | %.2f)", float64(resp.Balance/100), float64(bal/100))
 }
