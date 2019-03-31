@@ -1,0 +1,4 @@
+github.com/kelseyhightower/envconfig v0.0.0-20180517194557-dd1402a4d99d h1:Tqg6yg0as+P38tbKytv9/yk+ifNq0CrvjlgADEniKog=
+github.com/kelseyhightower/envconfig v0.0.0-20180517194557-dd1402a4d99d/go.mod h1:cccZRl6mQpaq41TPp5QxidR+Sa3axMbJDNb//FQX6Gg=
+github.com/tjvr/go-monzo v0.0.0-20180511092950-ad18e6b56ef8 h1:Vf24FAExV6uT7u4pPpMhm6PpwPnT+kAFFxkx6y/StGE=
+github.com/tjvr/go-monzo v0.0.0-20180511092950-ad18e6b56ef8/go.mod h1:vE3tB6QigZ1o/4fdQkuA92XOVmZJdURYeBWN1ZALsYc=
