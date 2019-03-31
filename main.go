@@ -78,7 +78,7 @@ func TxnHandler(w http.ResponseWriter, r *http.Request) {
 	os.Setenv("LAST_TRANSACTION_ID", wh.Data.TransactionID)
 
 	if s.SweepThreshold <= 0.0 || wh.Data.Amount < s.SweepThreshold {
-		log.Printf("INFO: ignoring inbound transaction (%v) below sweep threshold (%v)", wh.Data.Amount, s.SweepThreshold)
+		log.Printf("INFO: ignoring transaction (%v) below sweep threshold (%v)", wh.Data.Amount, s.SweepThreshold)
 		return
 	}
 
