@@ -1,3 +1,5 @@
+github.com/karupanerura/go-mock-http-response v0.0.0-20171201120521-7c242a447d45 h1:XSik/ETzj52cVbZcv7tJuUFX14XzvRX0te26UaKY0Aw=
+github.com/karupanerura/go-mock-http-response v0.0.0-20171201120521-7c242a447d45/go.mod h1:FULZ2B7LE0CUYtI8XLMYxI58AF9M6MTg6nWmZvWoFHQ=
 github.com/kelseyhightower/envconfig v0.0.0-20180517194557-dd1402a4d99d h1:Tqg6yg0as+P38tbKytv9/yk+ifNq0CrvjlgADEniKog=
 github.com/kelseyhightower/envconfig v0.0.0-20180517194557-dd1402a4d99d/go.mod h1:cccZRl6mQpaq41TPp5QxidR+Sa3axMbJDNb//FQX6Gg=
 github.com/tjvr/go-monzo v0.0.0-20180511092950-ad18e6b56ef8 h1:Vf24FAExV6uT7u4pPpMhm6PpwPnT+kAFFxkx6y/StGE=
