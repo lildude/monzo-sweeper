@@ -1,0 +1,15 @@
+{
+  "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+  "extends": [
+    "config:recommended",
+    ":disableDependencyDashboard"
+  ],
+  "prHourlyLimit": 4,
+  "prBodyColumns": [
+    "Package",
+    "Update",
+    "Change"
+  ],
+  "prBodyTemplate": "{{{table}}}{{{warnings}}}{{{notes}}}{{{changelogs}}}",
+  "semanticCommits": "disabled"
+}
